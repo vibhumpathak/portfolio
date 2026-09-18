@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vibhum Pathak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+
+/* ===================== TOKENS ===================== */
+:root{
+  --paper: #F5F2EA;
+  --paper-raised: #FBF9F3;
+  --ink: #1C2333;
+  --ink-soft: #52596B;
+  --ink-faint: #8A8F9E;
+  --amber: #D98A2B;
+  --amber-deep: #B96E17;
+  --teal: #1F6F64;
+  --teal-deep: #17544C;
+  --line: #DCD5C0;
+  --line-strong: #C7BE9F;
+  --card-shadow: 0 1px 0 rgba(28,35,51,0.04);
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --font-display: "Helvetica", serif;
+  --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --maxw: 1080px;
+}
+
+:root[data-theme="dark"]{
+  --paper: #1B1F2A;
+  --paper-raised: #222836;
+  --ink: #EDEAE0;
+  --ink-soft: #B7BAC4;
+  --ink-faint: #7B808F;
+  --line: #333B4A;
+  --line-strong: #444E60;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:500;color:var(--ink);margin:0;letter-spacing:-0.01em;}
+p{margin:0;color:var(--ink-soft);}
+button{font-family:var(--font-body);cursor:pointer;}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){ *{animation:none !important;transition:none !important;} html{scroll-behavior:auto;} }
+
+/* ===================== NAV ===================== */
+.site-nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(245,242,234,0.92);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+:root[data-theme="dark"] .site-nav{background:rgba(27,31,42,0.9);}
+.nav-inner{
+  max-width:var(--maxw);margin:0 auto;padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:68px;
+}
+.brand{font-family:var(--font-display);font-size:19px;font-weight:500;color:var(--ink);}
+.brand span{color:var(--amber-deep);}
+.nav-links{display:flex;align-items:center;gap:28px;list-style:none;margin:0;padding:0;}
+.nav-links > li{position:relative;}
+.nav-links a, .nav-links .navbtn{
+  font-size:14.5px;color:var(--ink-soft);padding:8px 2px;display:inline-flex;align-items:center;gap:5px;
+  border-bottom:2px solid transparent;transition:color .15s ease, border-color .15s ease;
+  background:none;border-top:none;border-left:none;border-right:none;
+}
+.nav-links a:hover,.nav-links .navbtn:hover,.nav-links a.active{color:var(--ink);border-bottom-color:var(--amber);}
+.chev{width:9px;height:9px;transition:transform .15s ease;}
+.dropdown{position:relative;}
+.dropdown-panel{
+  position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);
+  background:var(--paper-raised);border:1px solid var(--line);border-radius:var(--radius-md);
+  box-shadow:0 8px 24px rgba(28,35,51,0.10);
+  min-width:190px;padding:6px;display:none;flex-direction:column;gap:1px;
+}
+.dropdown.open .dropdown-panel{display:flex;}
+.dropdown.open .chev{transform:rotate(180deg);}
+.dropdown-panel a{width:100%;padding:9px 12px;border-radius:var(--radius-sm);border-bottom:none;}
+.dropdown-panel a:hover{background:var(--paper);color:var(--ink);}
+.dropdown-panel a.active{color:var(--teal-deep);background:var(--paper);}
+.menu-toggle{display:none;background:none;border:none;padding:6px;color:var(--ink);}
+.menu-toggle svg{width:24px;height:24px;}
+
+@media (max-width: 880px){
+  .nav-links{
+    position:fixed;top:68px;left:0;right:0;bottom:0;
+    background:var(--paper);flex-direction:column;align-items:flex-start;
+    padding:18px 28px;gap:2px;overflow-y:auto;
+    transform:translateX(100%);transition:transform .22s ease;
+    display:flex;
+  }
+  body.menu-open .nav-links{transform:translateX(0);}
+  .nav-links > li{width:100%;}
+  .nav-links a,.nav-links .navbtn{width:100%;padding:13px 2px;border-bottom:1px solid var(--line);font-size:16px;}
+  .dropdown-panel{position:static;transform:none;box-shadow:none;min-width:0;display:none;margin:0 0 0 12px;border:none;background:none;}
+  .dropdown.open .dropdown-panel{display:flex;}
+  .dropdown-panel a{border-bottom:1px solid var(--line);}
+  .menu-toggle{display:inline-flex;}
+}
+
+/* ===================== PAGES ===================== */
+.page{display:none;}
+.page.active{display:block;}
+section{padding:74px 0;}
+.section-tight{padding:54px 0;}
+.eyebrow{font-size:13px;color:var(--teal-deep);font-weight:600;margin-bottom:10px;display:block;}
+.divider{border:none;border-top:1px solid var(--line);margin:0;}
+
+/* ===================== BUTTONS ===================== */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;border-radius:var(--radius-sm);
+  font-size:14.5px;font-weight:600;border:1px solid transparent;
+  transition:transform .12s ease, background .15s ease, border-color .15s ease;
+}
+.btn-primary{background:var(--ink);color:var(--paper-raised);}
+.btn-primary:hover{background:var(--teal-deep);}
+.btn-outline{border-color:var(--line-strong);color:var(--ink);}
+.btn-outline:hover{border-color:var(--ink);background:var(--paper-raised);}
+.btn:active{transform:translateY(1px);}
+
+/* ===================== HERO (home) ===================== */
+.hero{
+  position:relative;padding:76px 0 60px;overflow:hidden;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size:34px 34px;
+  background-position:center 0;
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+:root[data-theme="dark"] .hero{opacity:0.9;}
+.hero-inner{
+  -webkit-mask-image:none;mask-image:none;
+  max-width:var(--maxw);margin:0 auto;padding:0 28px;
+  display:grid;grid-template-columns:1.15fr 0.85fr;gap:48px;align-items:center;
+  position:relative;
+}
+.hero-fix{position:relative;}
+.hero-tag{font-size:14px;color:var(--amber-deep);font-weight:600;margin-bottom:16px;letter-spacing:0.01em;}
+.hero h1{font-size:56px;line-height:1.04;margin-bottom:18px;}
+.hero-lede{font-size:18.5px;line-height:1.65;max-width:520px;color:var(--ink-soft);margin-bottom:28px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.avatar-slot{
+  aspect-ratio:1/1;width:100%;max-width:340px;margin:0 auto;
+  border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);
+  background:var(--paper-raised);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  color:var(--ink-faint);text-align:center;padding:20px;
+}
+.avatar-slot svg{width:44px;height:44px;opacity:0.65;}
+.avatar-slot span{font-size:13px;max-width:200px;}
+@media (max-width:880px){
+  .hero-inner{grid-template-columns:1fr;}
+  .hero h1{font-size:40px;}
+  .avatar-slot{max-width:220px;}
+}
+
+/* Generic page hero (non-home) */
+.page-hero{padding:56px 0 40px;border-bottom:1px solid var(--line);}
+.page-hero h1{font-size:38px;}
+.page-hero .hero-lede{margin-top:12px;max-width:640px;}
+
+/* ===================== INTEREST / EXPERIENCE CARDS ===================== */
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+@media (max-width:880px){ .grid-2,.grid-3,.grid-4{grid-template-columns:1fr 1fr;} }
+@media (max-width:620px){ .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} }
+
+.icard{
+  padding:22px 20px;border:1px solid var(--line);border-radius:var(--radius-md);
+  background:var(--paper-raised);
+}
+.icard .icn{width:26px;height:26px;color:var(--teal-deep);margin-bottom:14px;}
+.icard h3{font-size:17px;margin-bottom:8px;font-weight:600;font-family:var(--font-body);}
+.icard p{font-size:14.5px;}
+
+.xp-card{
+  display:grid;grid-template-columns:auto 1fr;gap:18px;
+  padding:26px;border-left:3px solid var(--amber);background:var(--paper-raised);
+  border-radius:0 var(--radius-md) var(--radius-md) 0;margin-bottom:16px;
+}
+.xp-card.teal{border-left-color:var(--teal);}
+.xp-icn{width:38px;height:38px;color:var(--ink);flex-shrink:0;}
+.xp-card h3{font-size:18px;margin-bottom:6px;font-family:var(--font-body);font-weight:600;}
+.xp-card p{font-size:14.5px;margin-bottom:10px;}
+.tag-row{display:flex;flex-wrap:wrap;gap:7px;}
+.tag{
+  font-size:12.5px;color:var(--ink-soft);border:1px solid var(--line-strong);
+  padding:4px 10px;border-radius:20px;background:var(--paper);
+}
+
+/* image placeholder (small, inline) */
+.img-slot{
+  border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);
+  background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;color:var(--ink-faint);text-align:center;padding:22px;min-height:160px;
+}
+.img-slot svg{width:30px;height:30px;opacity:0.6;}
+.img-slot span{font-size:12.5px;max-width:200px;}
+
+/* ===================== CONTACT / FOOTER ===================== */
+.contact-block{
+  background:var(--ink);color:var(--paper);padding:56px 0;border-radius:var(--radius-md);
+  margin:0 28px;max-width:calc(var(--maxw) - 56px);margin-left:auto;margin-right:auto;
+}
+:root[data-theme="dark"] .contact-block{background:var(--paper-raised);}
+.contact-inner{max-width:var(--maxw);margin:0 auto;padding:0 28px;display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;}
+.contact-block h2{color:var(--paper-raised);font-size:28px;}
+:root[data-theme="dark"] .contact-block h2{color:var(--ink);}
+.contact-block p{color:#C9CCD6;}
+:root[data-theme="dark"] .contact-block p{color:var(--ink-soft);}
+
+footer{padding:36px 0;border-top:1px solid var(--line);}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.footer-brand{font-family:var(--font-display);font-size:17px;}
+.footer-meta{font-size:13px;color:var(--ink-faint);text-align:right;}
+
+/* ===================== ABOUT / RESUME ===================== */
+.about-section{padding:44px 0;border-bottom:1px solid var(--line);}
+.about-section:last-of-type{border-bottom:none;}
+.about-section h2{font-size:26px;margin-bottom:16px;}
+.about-section .body-text{max-width:680px;font-size:15.5px;line-height:1.75;}
+.about-section .body-text + .body-text{margin-top:14px;}
+
+.resume-head{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding-bottom:24px;border-bottom:2px solid var(--ink);margin-bottom:8px;}
+.resume-head h1{font-size:34px;}
+.resume-head .school-line{font-size:14.5px;color:var(--ink-soft);margin-top:4px;}
+.resume-sec{padding:30px 0;border-bottom:1px solid var(--line);}
+.resume-sec h2{font-size:15px;text-transform:uppercase;letter-spacing:0.06em;color:var(--teal-deep);font-family:var(--font-body);font-weight:600;margin-bottom:18px;}
+.resume-item{margin-bottom:16px;}
+.resume-item .role-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.resume-item h3{font-size:16.5px;font-family:var(--font-body);font-weight:600;}
+.resume-item .org{font-size:14px;color:var(--ink-soft);}
+.resume-item ul{margin:8px 0 0 0;padding-left:20px;color:var(--ink-soft);font-size:14.5px;}
+.resume-item li{margin-bottom:4px;}
+.skill-tags{display:flex;flex-wrap:wrap;gap:9px;}
+
+/* ===================== BLOG ===================== */
+.post{border:1px solid var(--line);border-radius:var(--radius-md);margin-bottom:14px;overflow:hidden;background:var(--paper-raised);}
+.post-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 22px;cursor:pointer;}
+.post-head h3{font-size:17.5px;font-family:var(--font-body);font-weight:600;}
+.post-date{font-size:13px;color:var(--ink-faint);white-space:nowrap;}
+.post-preview{font-size:14.5px;margin-top:5px;}
+.post-plus{width:18px;height:18px;color:var(--ink-faint);flex-shrink:0;transition:transform .18s ease;}
+.post.open .post-plus{transform:rotate(45deg);}
+.post-body{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+.post-body-inner{padding:0 22px 22px;font-size:14.5px;line-height:1.75;border-top:1px solid var(--line);padding-top:16px;}
+
+/* ===================== RESEARCH ===================== */
+.qlist{list-style:none;margin:0;padding:0;}
+.qlist li{
+  padding:16px 0 16px 30px;position:relative;border-bottom:1px solid var(--line);
+  font-size:15px;color:var(--ink);
+}
+.qlist li:before{
+  content:"";position:absolute;left:4px;top:24px;width:7px;height:7px;border-radius:50%;background:var(--amber);
+}
+.placeholder-card{
+  border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);padding:22px;
+  color:var(--ink-faint);font-size:14px;text-align:center;background:var(--paper);
+}
+
+/* ===================== PROJECTS ===================== */
+.coming-soon{
+  border:1.5px dashed var(--line-strong);border-radius:var(--radius-md);
+  padding:60px 30px;text-align:center;background:var(--paper-raised);margin-bottom:36px;
+}
+.coming-soon .icn{width:40px;height:40px;color:var(--amber-deep);margin:0 auto 16px;}
+.coming-soon h2{font-size:24px;margin-bottom:8px;}
+.coming-soon p{max-width:440px;margin:0 auto;}
+
+/* ===================== MENTOR ===================== */
+.mentor-card{
+  display:flex;gap:22px;align-items:center;padding:26px;border:1px solid var(--line);
+  border-radius:var(--radius-md);background:var(--paper-raised);margin-bottom:36px;flex-wrap:wrap;
+}
+.mentor-avatar{
+  width:88px;height:88px;border-radius:50%;border:1.5px dashed var(--line-strong);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-faint);flex-shrink:0;
+}
+.mentor-avatar svg{width:32px;height:32px;}
+.mentor-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px 24px;flex:1;min-width:220px;}
+.mentor-fields div{font-size:14px;}
+.mentor-fields b{color:var(--ink);font-weight:600;}
+.mentor-fields span{color:var(--ink-faint);}
+
+/* utility */
+.mb-sm{margin-bottom:10px;}
+</style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="#home" class="brand" data-link="home">Vibhum <span>Pathak</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home" data-link="home">Home</a></li>
+      <li><a href="#about" data-link="about">About Me</a></li>
+      <li><a href="#resume" data-link="resume">Resume</a></li>
+      <li class="dropdown" id="ismDropdown">
+        <button class="navbtn" id="ismToggle">ISM
+          <svg class="chev" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 1l4 4 4-4"/></svg>
+        </button>
+        <div class="dropdown-panel">
+          <a href="#ism-about" data-link="ism-about">About ISM</a>
+          <a href="#blog" data-link="blog">Blog</a>
+          <a href="#research" data-link="research">Research</a>
+          <a href="#projects" data-link="projects">Projects</a>
+          <a href="#mentor" data-link="mentor">Mentor</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ============================================================ HOME ============================================================ -->
+<main id="home" class="page">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-fix">
+        <span class="hero-tag">Junior · Lebanon Trail High School · Texas</span>
+        <h1>Vibhum Pathak</h1>
+        <p class="hero-lede">Curious. Ambitious. Always learning.</p>
+        <p class="hero-lede">I've always wanted to know how things actually work — especially when it comes to technology, computers, and engineering. This is where I share what I'm building, learning, and figuring out along the way.</p>
+        <div class="hero-actions">
+          <a href="#about" class="btn btn-primary" data-link="about">About Me</a>
+          <a href="#projects" class="btn btn-outline" data-link="projects">See My Work</a>
+        </div>
+      </div>
+      <div class="avatar-slot">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+        <span>Add your photo here</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="home-intro">
+    <div class="wrap">
+      <span class="eyebrow">About Me</span>
+      <h2 style="font-size:30px;max-width:640px;margin-bottom:16px;">Hi, I'm Vibhum. glad you're here.</h2>
+      <p style="max-width:640px;font-size:15.5px;line-height:1.75;margin-bottom:24px;">
+        I'm a junior at Lebanon Trail High School, and I've always been curious about how things work, especially when it comes to technology, computers, and engineering. I enjoy taking on challenges, learning through experience, and finding ways to turn my ideas into something real. Outside of school, I'm involved in Scouting, debate, and other activities that have helped me grow as a leader and communicator.
+      </p>
+      <a href="#about" class="btn btn-outline" data-link="about">More About Me</a>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="home-interests">
+    <div class="wrap">
+      <span class="eyebrow">My Interests</span>
+      <h2 style="font-size:28px;margin-bottom:28px;">What I keep coming back to</h2>
+      <div class="grid-4">
+        <div class="icard">
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+          <h3>Artificial Intelligence</h3>
+          <p>How AI systems are built, and what they mean for the way we live and work.</p>
+        </div>
+        <div class="icard">
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 2v2M15 2v2M9 20v2M15 20v2M2 9h2M2 15h2M20 9h2M20 15h2"/></svg>
+          <h3>Computer Technology</h3>
+          <p>I like taking things apart, in my head or for real, to see how they're put together.</p>
+        </div>
+        <div class="icard">
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l1.6-1.6a5 5 0 01-6.9 6.9l-5.7 5.7a2 2 0 01-2.8-2.8l5.7-5.7a5 5 0 016.9-6.9l-1.6 1.6z"/></svg>
+          <h3>Engineering</h3>
+          <p>Turning an idea on paper into something that actually functions.</p>
+        </div>
+        <div class="icard">
+          <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 3h6l1 4h3v3l-4 1v2l4 1v3h-3l-1 4H9l-1-4H5v-3l4-1v-2l-4-1V7h3l1-4z"/></svg>
+          <h3>Problem Solving</h3>
+          <p>Finding what doesn't work is usually the fastest way to find what does.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="home-experiences">
+    <div class="wrap">
+      <span class="eyebrow">My Experiences</span>
+      <h2 style="font-size:28px;margin-bottom:28px;">Outside the classroom</h2>
+      <div class="xp-card">
+        <svg class="xp-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6l8-4z"/><path d="M9 12l2 2 4-4"/></svg>
+        <div>
+          <h3>Scouting</h3>
+          <p>I'm part of Troop 416, working toward Eagle Scout. Scouting has taught me a lot about leadership, responsibility, and working as part of a team.</p>
+          <div class="tag-row"><span class="tag">Leadership</span><span class="tag">Service</span><span class="tag">Teamwork</span></div>
+        </div>
+      </div>
+      <div class="xp-card teal">
+        <svg class="xp-icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 4h9a4 4 0 010 8H8l-4 4V4z"/><path d="M20 20h-9a4 4 0 010-8h5l4-4v12z"/></svg>
+        <div>
+          <h3>Debate</h3>
+          <p>I compete in Congressional Debate, which has pushed me to think on my feet, research quickly, and speak with more confidence.</p>
+          <div class="tag-row"><span class="tag">Public Speaking</span><span class="tag">Research</span><span class="tag">Critical Thinking</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <section id="home-work">
+    <div class="wrap">
+      <span class="eyebrow">My Work</span>
+      <h2 style="font-size:28px;margin-bottom:16px;">Selected work, in progress</h2>
+      <p style="max-width:560px;margin-bottom:24px;">I'm currently building out a project I'll be adding here as it develops. Check back soon, or take a look at where things stand.</p>
+      <a href="#projects" class="btn btn-outline" data-link="projects">View Projects</a>
+    </div>
+  </section>
+
+  <section id="home-contact">
+    <div class="contact-block">
+      <div class="contact-inner">
+        <div>
+          <h2>Let's connect</h2>
+          <p>Have a question, or just want to say hi? Reach out anytime.</p>
+        </div>
+        <a href="gmail:vibhumpathak1@gmail.com" class="btn btn-primary" style="background:var(--amber);color:var(--ink);">vibhumpathak1@gmail.com</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============================================================ ABOUT ME ============================================================ -->
+<main id="about" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">About Me</span>
+      <h1>Getting to know me</h1>
+      <p class="hero-lede">A closer look at who I am, what I care about, and where I'm headed.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="about-section">
+      <h2>Who I Am</h2>
+      <p class="body-text">My name is Vibhum Pathak, and I am a student at Lebanon Trail High School. I have always been someone who likes to understand how things work. Whether it is technology, a new idea, or a difficult problem, I enjoy figuring out how different pieces fit together.</p>
+      <p class="body-text">I would describe myself as curious, ambitious, and willing to take on challenges. When I become interested in something, I like to learn as much as I can about it.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Interests</h2>
+      <p class="body-text">I am particularly interested in artificial intelligence, computers, engineering, and emerging technology. I enjoy learning about new developments and thinking about how they could be used to solve real-world problems — from autonomous systems to the tools we use every day.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Activities</h2>
+      <p class="body-text">Outside of academics, I'm involved in Boy Scouts of America through Troop 416, where I've held troop leadership positions and am working toward Eagle Scout. Scouting has shaped how I think about responsibility, service, and working with others.</p>
+      <p class="body-text">I also compete in debate, including Congressional Debate. Between tournaments and outreach to middle-school students, debate has sharpened my research, public speaking, and quick thinking.</p>
+      <div class="grid-2" style="margin-top:20px;">
+        <div class="img-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Scouting photo placeholder</span>
+        </div>
+        <div class="img-slot">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg>
+          <span>Debate photo placeholder</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-section">
+      <h2>What Drives Me</h2>
+      <p class="body-text">I believe that making mistakes is part of learning. Trying something, finding what does not work, and improving it is often how the best ideas develop. I'd rather understand technology than just use it — that's what keeps me curious.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Goals</h2>
+      <p class="body-text">I want to continue developing my technical, leadership, communication, and problem-solving skills while exploring careers involving technology and engineering.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Mission</h2>
+      <p class="body-text" style="font-family:var(--font-display);font-size:20px;font-style:italic;color:var(--ink);line-height:1.6;">"I want to continue learning, challenge myself, and use technology and engineering to create smarter, safer, and more effective solutions."</p>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================ RESUME ============================================================ -->
+<main id="resume" class="page">
+  <div class="wrap" style="padding-top:56px;padding-bottom:70px;">
+    <div class="resume-head">
+      <div>
+        <h1>Vibhum Pathak</h1>
+        <p class="school-line">Lebanon Trail High School &nbsp;·&nbsp; Junior &nbsp;·&nbsp; Texas</p>
+      </div>
+    </div>
+
+    <div class="resume-sec">
+      <h2>Education</h2>
+      <div class="resume-item">
+        <div class="role-row"><h3>Lebanon Trail High School</h3><span class="org">Junior</span></div>
+        <p class="org">Frisco, Texas</p>
+      </div>
+    </div>
+
+    <div class="resume-sec">
+      <h2>Activities & Leadership</h2>
+      <div class="resume-item">
+        <div class="role-row"><h3>Boy Scouts of America — Troop 416</h3><span class="org">Working toward Eagle Scout</span></div>
+        <ul>
+          <li>Held troop leadership positions</li>
+          <li>Helped organize and support troop activities</li>
+          <li>Developed leadership, teamwork, and organizational skills</li>
+        </ul>
+      </div>
+      <div class="resume-item">
+        <div class="role-row"><h3>Congressional Debate</h3><span class="org">Competitive Debate</span></div>
+        <ul>
+          <li>Competed in tournaments in Congressional Debate</li>
+          <li>Participated in middle-school debate outreach</li>
+          <li>Built research, public speaking, and argumentation skills</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="resume-sec">
+      <h2>Skills</h2>
+      <div class="skill-tags">
+        <span class="tag">Leadership</span><span class="tag">Public Speaking</span><span class="tag">Research</span>
+        <span class="tag">Communication</span><span class="tag">Teamwork</span><span class="tag">Problem Solving</span>
+        <span class="tag">Technology</span><span class="tag">Project Management</span>
+      </div>
+    </div>
+
+    <div class="resume-sec">
+      <h2>Interests</h2>
+      <div class="skill-tags">
+        <span class="tag">Artificial Intelligence</span><span class="tag">Computer Technology</span>
+        <span class="tag">Engineering</span><span class="tag">Autonomous Technology</span>
+        <span class="tag">Emerging Technology</span><span class="tag">Innovation</span>
+      </div>
+    </div>
+
+    <div class="resume-sec" style="border-bottom:none;">
+      <h2>Career Interests</h2>
+      <p style="font-size:14.5px;">Exploring careers in artificial intelligence, computer science, and engineering — with a particular interest in autonomous systems and emerging technology.</p>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================ ISM ABOUT ============================================================ -->
+<main id="ism-about" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Independent Study & Mentorship</span>
+      <h1>About My ISM</h1>
+      <p class="hero-lede">The research, blog, projects, and mentorship work I'm doing this year through ISM — separate from the rest of my personal site.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="about-section">
+      <h2>What ISM Is</h2>
+      <p class="body-text">Independent Study and Mentorship gives me the opportunity to explore a topic in greater depth through independent learning, research, professional guidance, and hands-on work.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Topic</h2>
+      <p class="body-text" style="font-family:var(--font-display);font-size:22px;color:var(--ink);margin-bottom:10px;">Artificial Intelligence and Computer Technology</p>
+      <p class="body-text">My interests within this topic include how AI systems are developed, how AI is applied across different industries, how technology affects everyday life, and where the field is headed next.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>Why I Chose This Topic</h2>
+      <p class="body-text">Technology has always been one of my biggest interests. I enjoy understanding how computers work and learning about new technologies. Artificial intelligence interests me because it combines areas I enjoy, including computers, mathematics, engineering, and problem-solving. AI is also developing quickly, which makes it an interesting field to explore right now.</p>
+    </div>
+
+    <div class="about-section">
+      <h2>My Goals</h2>
+      <div class="grid-2">
+        <ul class="qlist" style="border:none;">
+          <li>Develop a stronger understanding of AI</li>
+          <li>Learn about modern computer technology</li>
+          <li>Research current developments</li>
+          <li>Learn from professionals in the field</li>
+        </ul>
+        <ul class="qlist" style="border:none;">
+          <li>Improve my research skills</li>
+          <li>Develop technical skills</li>
+          <li>Create original work</li>
+          <li>Explore possible technology careers</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================ BLOG ============================================================ -->
+<main id="blog" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">ISM</span>
+      <h1>Blog</h1>
+      <p class="hero-lede">Weekly updates on my ISM research and progress. New posts get added here as the year goes on.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding:48px 0 70px;">
+    <div id="blogList"></div>
+  </div>
+</main>
+
+<!-- ============================================================ RESEARCH ============================================================ -->
+<main id="research" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">ISM</span>
+      <h1>Research</h1>
+      <p class="hero-lede">The questions guiding my research into artificial intelligence and computer technology.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding:48px 0 20px;">
+    <div class="grid-2" style="align-items:start;">
+      <div>
+        <h2 style="font-size:20px;margin-bottom:16px;">Research Questions</h2>
+        <ul class="qlist">
+          <li>How is artificial intelligence changing modern technology?</li>
+          <li>How are AI systems developed?</li>
+          <li>How is AI being used in different industries?</li>
+          <li>What challenges come with developing AI?</li>
+          <li>How can AI be used responsibly?</li>
+          <li>What skills will future technology careers require?</li>
+          <li>How could AI affect everyday life?</li>
+        </ul>
+      </div>
+      <div>
+        <h2 style="font-size:20px;margin-bottom:16px;">Research Areas</h2>
+        <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="icard" style="padding:16px;"><h3 style="font-size:15px;margin-bottom:0;">Artificial Intelligence</h3></div>
+          <div class="icard" style="padding:16px;"><h3 style="font-size:15px;margin-bottom:0;">Computer Technology</h3></div>
+          <div class="icard" style="padding:16px;"><h3 style="font-size:15px;margin-bottom:0;">Emerging Technology</h3></div>
+          <div class="icard" style="padding:16px;"><h3 style="font-size:15px;margin-bottom:0;">Real-World Applications</h3></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap" style="padding:30px 0 70px;">
+    <h2 style="font-size:20px;margin-bottom:16px;">Research Materials</h2>
+    <div class="grid-4">
+      <div class="placeholder-card">Research Assessments<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Annotated Bibliography<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Sources<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Presentations & Notes<br><span style="font-size:12px;">Coming soon</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================ PROJECTS ============================================================ -->
+<main id="projects" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">ISM</span>
+      <h1>Projects</h1>
+      <p class="hero-lede">Turning my research into original, hands-on work.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding:48px 0 70px;">
+    <div class="coming-soon">
+      <svg class="icn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l3 6 6 1-4.5 4.3L17.5 20 12 17l-5.5 3 1-6.7L3 9l6-1 3-6z"/></svg>
+      <h2>Project Coming Soon</h2>
+      <p>I'm still developing my final ISM project. This page will be updated with the full write-up once it's underway.</p>
+    </div>
+
+    <div class="grid-3">
+      <div class="img-slot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg><span>Project images</span></div>
+      <div class="placeholder-card">Development Process<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Progress Updates<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Research Connection<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">Final Product<br><span style="font-size:12px;">Coming soon</span></div>
+      <div class="placeholder-card">What I Learned<br><span style="font-size:12px;">Coming soon</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- ============================================================ MENTOR ============================================================ -->
+<main id="mentor" class="page">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">ISM</span>
+      <h1>Mentor</h1>
+      <p class="hero-lede">The professional guidance behind my ISM work.</p>
+    </div>
+  </section>
+
+  <div class="wrap" style="padding:48px 0 70px;">
+    <div class="mentor-card">
+      <div class="mentor-avatar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+      </div>
+      <div class="mentor-fields">
+        <div><span>Name: </span><b>[MENTOR NAME]</b></div>
+        <div><span>Field: </span><b>[FIELD]</b></div>
+        <div><span>Job Title: </span><b>[JOB TITLE]</b></div>
+        <div><span>Organization: </span><b>[COMPANY/ORGANIZATION]</b></div>
+      </div>
+    </div>
+
+    <div class="about-section" style="padding-top:0;">
+      <h2>About My Mentor</h2>
+      <p class="body-text">[Add a short introduction to your mentor here — their background and what they do.]</p>
+    </div>
+    <div class="about-section">
+      <h2>Why I Chose My Mentor</h2>
+      <p class="body-text">[Explain why this mentor is a good fit for your ISM topic.]</p>
+    </div>
+    <div class="about-section">
+      <h2>What I Hope to Learn</h2>
+      <p class="body-text">[Add what you're hoping to gain from this mentorship.]</p>
+    </div>
+    <div class="about-section">
+      <h2>Mentor Meetings</h2>
+      <p class="body-text">[This section will log reflections after each meeting with your mentor.]</p>
+      <div class="placeholder-card" style="margin-top:14px;">Meeting log coming soon</div>
+    </div>
+    <div class="about-section" style="border-bottom:none;">
+      <h2>Key Takeaways</h2>
+      <p class="body-text">[Summarize the biggest lessons from your mentorship as they come up.]</p>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap footer-inner">
+    <div class="footer-brand">Vibhum Pathak</div>
+    <div class="footer-meta">Technology &bull; Engineering &bull; Leadership<br>&copy; 2026 Vibhum Pathak</div>
+  </div>
+</footer>
+
+<script>
+/* ---------- blog data: edit this array to add/update posts ---------- */
+const posts = [
+  {
+    title: "Getting Started",
+    date: "Week 1",
+    preview: "Kicking off my ISM topic and figuring out where to begin.",
+    body: "This year I'm using my ISM to dig into artificial intelligence and computer technology — a topic I've been interested in for a while but haven't had a structured way to explore. Right now I'm mostly focused on figuring out where to start: narrowing down what parts of AI I want to research first and getting a feel for what my mentorship and project could look like."
+  },
+  {
+    title: "Exploring AI",
+    date: "Week 2",
+    preview: "Starting to look into how AI systems actually get built.",
+    body: "I've started reading more about how AI systems are developed and where they're being used already. It's a huge topic, so a lot of this week has been about narrowing my focus rather than trying to cover everything at once. I'm particularly interested in how AI shows up in everyday technology, not just in research labs."
+  },
+  {
+    title: "Beginning Research",
+    date: "Week 3",
+    preview: "Turning my early reading into an actual research plan.",
+    body: "This week I started putting together a more structured research plan based on the questions I want to answer this year. I'm working on finding solid sources and organizing what I'm learning so it's easier to build on as the semester goes."
+  }
+];
+
+const blogList = document.getElementById('blogList');
+posts.forEach((p, i) => {
+  const post = document.createElement('div');
+  post.className = 'post';
+  post.innerHTML = `
+    <div class="post-head" data-idx="${i}">
+      <div>
+        <h3>${p.title}</h3>
+        <p class="post-preview">${p.preview}</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <span class="post-date">${p.date}</span>
+        <svg class="post-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+    </div>
+    <div class="post-body"><div class="post-body-inner">${p.body}</div></div>
+  `;
+  blogList.appendChild(post);
+});
+blogList.addEventListener('click', (e) => {
+  const head = e.target.closest('.post-head');
+  if (!head) return;
+  const post = head.closest('.post');
+  const body = post.querySelector('.post-body');
+  const isOpen = post.classList.contains('open');
+  document.querySelectorAll('.post.open').forEach(p => {
+    p.classList.remove('open');
+    p.querySelector('.post-body').style.maxHeight = null;
+  });
+  if (!isOpen) {
+    post.classList.add('open');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+});
+
+/* ---------- routing ---------- */
+const pages = document.querySelectorAll('.page');
+const navAnchors = document.querySelectorAll('[data-link]');
+function showPage(id) {
+  if (!document.getElementById(id)) id = 'home';
+  pages.forEach(p => p.classList.toggle('active', p.id === id));
+  navAnchors.forEach(a => a.classList.toggle('active', a.getAttribute('data-link') === id));
+  document.body.classList.remove('menu-open');
+  document.getElementById('ismDropdown').classList.remove('open');
+  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
+}
+function routeFromHash() {
+  const id = (location.hash || '#home').slice(1);
+  showPage(id);
+}
+window.addEventListener('hashchange', routeFromHash);
+routeFromHash();
+
+/* ---------- mobile menu ---------- */
+document.getElementById('menuToggle').addEventListener('click', () => {
+  document.body.classList.toggle('menu-open');
+});
+
+/* ---------- ISM dropdown ---------- */
+const ismDropdown = document.getElementById('ismDropdown');
+const ismToggle = document.getElementById('ismToggle');
+ismToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  ismDropdown.classList.toggle('open');
+});
+document.addEventListener('click', (e) => {
+  if (!ismDropdown.contains(e.target)) ismDropdown.classList.remove('open');
+});
+
+/* mark ISM toggle active when on an ISM page */
+const ismPages = ['ism-about','blog','research','projects','mentor'];
+window.addEventListener('hashchange', () => {
+  const id = (location.hash || '#home').slice(1);
+  ismToggle.classList.toggle('active', ismPages.includes(id));
+});
+</script>
+</body>
+</html>
